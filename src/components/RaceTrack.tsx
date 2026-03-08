@@ -18,7 +18,7 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
   return (
     <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
       {/* Horizontal scroll wrapper for mobile */}
-      <div className="flex-1 min-h-0 overflow-x-auto overflow-y-hidden flex flex-col">
+      <div className="flex-1 min-h-0 overflow-x-auto overflow-y-auto flex flex-col">
         <div className="min-w-[600px] flex-1 flex flex-col">
       {/* Red-white curb top */}
       <div
@@ -38,7 +38,7 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
             <span
               key={cp.hours}
               className="absolute text-[7px] text-white/70 -translate-x-1/2 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]"
-              style={{ left: `${(cp.hours / maxHours) * 100}%` }}
+              style={{ left: `calc(${88 + 4}px + (100% - ${88 + 16 + 4}px) * ${cp.hours / maxHours})` }}
             >
               {cp.label}
             </span>
@@ -50,7 +50,7 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
       </div>
 
       {/* Lanes wrapper — relative so start/finish lines overlay the scroll area */}
-      <div className="relative flex-1 overflow-hidden">
+      <div className="relative flex-1 min-h-0 overflow-hidden">
         {/* Start line */}
         {racers.length > 0 && (
           <div className="absolute top-0 bottom-0 w-[3px] bg-white/50 z-30 pointer-events-none" style={{ left: 88 }} />
@@ -102,7 +102,7 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
                   <span className="text-[7px] text-white whitespace-nowrap drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] mb-0.5">
                     {racer.name.split(" ")[0]}
                   </span>
-                  <PixelCar sprite={racer.sprite} size={36} />
+                  <PixelCar sprite={racer.sprite} size={36} gray={racer.name.startsWith("Ilsur")} />
                 </div>
               </div>
 
