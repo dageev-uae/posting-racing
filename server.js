@@ -150,10 +150,14 @@ app.post("/api/upload", requireAuth, upload.single("file"), (req, res) => {
       [ilsur.sprite, farruh.sprite] = [farruh.sprite, ilsur.sprite];
     }
 
-    // Rename Eugeny -> Eugeny A.
+    // Rename duplicates
     const eugeny = updated.find((r) => r.name.toLowerCase() === "eugeny");
     if (eugeny) {
       eugeny.name = "Eugeny A.";
+    }
+    const evgeny = updated.find((r) => r.name.toLowerCase() === "evgeny");
+    if (evgeny) {
+      evgeny.name = "Evgeny Z.";
     }
 
     // Snezhana always gets the red car
