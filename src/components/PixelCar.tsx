@@ -16,7 +16,7 @@ export function PixelCar({ sprite, size = 48, rotate = true, damaged = false }: 
         height: "auto",
         imageRendering: "auto",
         ...(damaged ? {
-          clipPath: "polygon(0% 15%, 8% 5%, 20% 12%, 30% 0%, 100% 0%, 100% 100%, 0% 100%)",
+          clipPath: "polygon(0% 20%, 5% 8%, 12% 18%, 20% 3%, 28% 15%, 35% 0%, 100% 0%, 100% 92%, 95% 100%, 0% 100%)",
         } : {}),
       }}
       draggable={false}
