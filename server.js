@@ -114,7 +114,7 @@ app.post("/api/upload", requireAuth, upload.single("file"), (req, res) => {
       const name = rows[i][0];
       const value = rows[i][postingCol];
       const dateCol = rows[i][1];
-      const SKIP_NAMES = ["total", "snezhana ageeva"];
+      const SKIP_NAMES = ["total"];
       if (name && typeof name === "string" && name.trim() && (dateCol == null || dateCol === "") && !SKIP_NAMES.includes(name.trim().toLowerCase())) {
         parsed.push({ name: name.trim(), progress: Number(value) || 0 });
       }
@@ -147,6 +147,12 @@ app.post("/api/upload", requireAuth, upload.single("file"), (req, res) => {
     const farruh = updated.find((r) => r.name.toLowerCase().startsWith("farruh"));
     if (ilsur && farruh) {
       [ilsur.sprite, farruh.sprite] = [farruh.sprite, ilsur.sprite];
+    }
+
+    // Snezhana always gets the red car
+    const snezhana = updated.find((r) => r.name.toLowerCase().startsWith("snezhana"));
+    if (snezhana) {
+      snezhana.sprite = "/cars/mark3_1.png";
     }
 
     racers = updated;
