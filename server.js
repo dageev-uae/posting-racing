@@ -152,7 +152,7 @@ app.post("/api/upload", requireAuth, upload.single("file"), (req, res) => {
     // Snezhana always gets the red car
     const snezhana = updated.find((r) => r.name.toLowerCase().startsWith("snezhana"));
     if (snezhana) {
-      snezhana.sprite = "/cars/mark3_1.png";
+      snezhana.sprite = "/cars/mark1_4.png";
     }
 
     racers = updated;
