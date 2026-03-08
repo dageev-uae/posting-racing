@@ -17,6 +17,9 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
 
   return (
     <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+      {/* Horizontal scroll wrapper for mobile */}
+      <div className="flex-1 min-h-0 overflow-x-auto overflow-y-hidden flex flex-col">
+        <div className="min-w-[600px] flex-1 flex flex-col">
       {/* Red-white curb top */}
       <div
         className="h-2 shrink-0"
@@ -131,6 +134,8 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
         }}
       />
 
+        </div>{/* close min-w-[600px] */}
+      </div>{/* close overflow-x-auto */}
     </div>
   );
 }
