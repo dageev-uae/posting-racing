@@ -61,7 +61,7 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
         )}
 
         <div
-          className="h-full overflow-y-auto pt-10"
+          className="h-full overflow-y-auto"
           style={{ backgroundColor: ASPHALT }}
         >
         {/* Top lane divider */}
@@ -100,7 +100,7 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
                   style={{ left: carLeft }}
                 >
                   <span className="text-[7px] text-white whitespace-nowrap drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] -mb-1">
-                    {racer.name.split(" ")[0]}
+                    {racer.name}
                   </span>
                   <PixelCar sprite={racer.sprite} size={36} damaged={racer.name.startsWith("Ilsur")} />
                 </div>
