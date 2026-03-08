@@ -9,8 +9,8 @@ export function Leaderboard({ racers }: LeaderboardProps) {
   const sorted = [...racers].sort((a, b) => b.hours - a.hours);
 
   return (
-    <div className="w-72 border-l border-gray-700 bg-gray-900/80 flex flex-col">
-      <h2 className="text-[10px] text-center py-3 border-b border-gray-700 text-yellow-400 tracking-wider">
+    <div className="md:w-72 border-t md:border-t-0 md:border-l border-gray-700 bg-gray-900/80 flex flex-col shrink-0 max-h-[40vh] md:max-h-none">
+      <h2 className="text-[10px] text-center py-2 md:py-3 border-b border-gray-700 text-yellow-400 tracking-wider">
         LEADERBOARD
       </h2>
 
@@ -18,7 +18,7 @@ export function Leaderboard({ racers }: LeaderboardProps) {
         {sorted.map((racer, i) => (
           <div
             key={racer.id}
-            className={`flex items-center gap-3 px-3 py-2 border-b border-gray-800 ${
+            className={`flex items-center gap-2 md:gap-3 px-2 md:px-3 py-1.5 md:py-2 border-b border-gray-800 ${
               i === 0 ? "bg-yellow-900/20" : ""
             }`}
           >

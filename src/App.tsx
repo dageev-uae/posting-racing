@@ -42,7 +42,7 @@ function App() {
         </h1>
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
         <RaceTrack racers={racers} maxHours={TRACK_LENGTH} />
         <Leaderboard racers={racers} />
       </div>

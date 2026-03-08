@@ -16,7 +16,7 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
   );
 
   return (
-    <div className="flex-1 overflow-hidden flex flex-col">
+    <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
       {/* Red-white curb top */}
       <div
         className="h-2 shrink-0"
