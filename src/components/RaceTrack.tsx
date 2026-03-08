@@ -99,7 +99,7 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
                   className="absolute bottom-2 transition-all duration-1000 ease-out z-10 flex flex-col items-center"
                   style={{ left: carLeft }}
                 >
-                  <span className="text-[7px] text-white whitespace-nowrap drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] mb-0.5">
+                  <span className="text-[7px] text-white whitespace-nowrap drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] -mb-1">
                     {racer.name.split(" ")[0]}
                   </span>
                   <PixelCar sprite={racer.sprite} size={36} gray={racer.name.startsWith("Ilsur")} />
