@@ -27,10 +27,10 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
 
       {/* Track header with checkpoint labels */}
       <div className="flex shrink-0" style={{ backgroundColor: ASPHALT }}>
-        <div className="w-24 shrink-0 px-2 py-2 text-[7px] text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
-          START
-        </div>
-        <div className="flex-1 relative py-2">
+        <div className="flex-1 relative py-2 px-2">
+          <span className="text-[7px] text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
+            START
+          </span>
           {checkpoints.map((cp) => (
             <span
               key={cp.hours}
@@ -46,48 +46,68 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
         </div>
       </div>
 
-      {/* Lanes */}
-      <div
-        className="relative flex-1 overflow-y-auto"
-        style={{ backgroundColor: ASPHALT }}
-      >
+      {/* Lanes wrapper — relative so start/finish lines overlay the scroll area */}
+      <div className="relative flex-1 overflow-hidden">
+        {/* Start line */}
+        {racers.length > 0 && (
+          <div className="absolute top-0 bottom-0 w-[3px] bg-white/50 z-30 pointer-events-none" style={{ left: 88 }} />
+        )}
+        {/* Finish line */}
+        {racers.length > 0 && (
+          <div className="absolute right-0 top-0 bottom-0 w-4 bg-[repeating-conic-gradient(#fff_0%_25%,#000_0%_50%)] bg-[length:16px_16px] z-30 pointer-events-none" />
+        )}
+
+        <div
+          className="h-full overflow-y-auto pt-10"
+          style={{ backgroundColor: ASPHALT }}
+        >
+        {/* Top lane divider */}
+        {racers.length > 0 && (
+          <div
+            className="h-[2px]"
+            style={{
+              backgroundImage: "repeating-linear-gradient(90deg, #ffffff 0px, #ffffff 12px, transparent 12px, transparent 24px)",
+            }}
+          />
+        )}
         {racers.map((racer) => {
           const progress = Math.min((racer.hours / maxHours) * 100, 100);
+          // 0% = before start line, >0% = after start line scaled to remaining track
+          const START_PX = 88;
+          const FINISH_PX = 16;
+          const carLeft = progress === 0
+            ? '28px'
+            : `calc(${START_PX + 4}px + (100% - ${START_PX + FINISH_PX + 4}px) * ${progress / 100})`;
 
           return (
             <div key={racer.id} className="relative">
-              <div className="flex items-center h-20">
-                {/* Name label */}
-                <div className="w-24 shrink-0 px-2 text-[7px] truncate text-white z-10 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
-                  {racer.name}
-                </div>
-
-                {/* Track area */}
-                <div className="flex-1 relative h-full">
-                  {/* Checkpoint lines */}
-                  {checkpoints.map((cp) => (
-                    <div
-                      key={cp.hours}
-                      className="absolute top-0 bottom-0 w-px bg-white/15"
-                      style={{ left: `${(cp.hours / maxHours) * 100}%` }}
-                    />
-                  ))}
-
-                  {/* Car */}
+              <div className="relative h-16">
+                {/* Checkpoint lines */}
+                {checkpoints.map((cp) => (
                   <div
-                    className="absolute top-1/2 -translate-y-1/2 transition-all duration-1000 ease-out z-10"
-                    style={{ left: `calc(${progress}% - 36px)` }}
-                  >
-                    <PixelCar sprite={racer.sprite} size={56} />
-                  </div>
+                    key={cp.hours}
+                    className="absolute top-0 bottom-0 w-px bg-white/15"
+                    style={{ left: `calc(${START_PX + 4}px + (100% - ${START_PX + FINISH_PX + 4}px) * ${(cp.hours / maxHours)})` }}
+                  />
+                ))}
+
+                {/* Car with name above */}
+                <div
+                  className="absolute bottom-2 transition-all duration-1000 ease-out z-10 flex flex-col items-center"
+                  style={{ left: carLeft }}
+                >
+                  <span className="text-[7px] text-white whitespace-nowrap drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] mb-0.5">
+                    {racer.name.split(" ")[0]}
+                  </span>
+                  <PixelCar sprite={racer.sprite} size={36} />
                 </div>
               </div>
 
               {/* White dashed lane divider */}
               <div
-                className="h-[4px]"
+                className="h-[2px]"
                 style={{
-                  backgroundImage: "repeating-linear-gradient(90deg, #ffffff 0px, #ffffff 20px, transparent 20px, transparent 40px)",
+                  backgroundImage: "repeating-linear-gradient(90deg, #ffffff 0px, #ffffff 12px, transparent 12px, transparent 24px)",
                 }}
               />
             </div>
@@ -100,10 +120,7 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
           </div>
         )}
 
-        {/* Finish line */}
-        {racers.length > 0 && (
-          <div className="absolute right-0 top-0 bottom-0 w-4 bg-[repeating-conic-gradient(#fff_0%_25%,#000_0%_50%)] bg-[length:16px_16px] z-20" />
-        )}
+        </div>
       </div>
 
       {/* Red-white curb bottom */}

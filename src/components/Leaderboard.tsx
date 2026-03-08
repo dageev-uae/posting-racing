@@ -38,16 +38,20 @@ export function Leaderboard({ racers }: LeaderboardProps) {
             </span>
 
             {/* Mini car */}
-            <PixelCar sprite={racer.sprite} size={28} />
+            <div className="shrink-0">
+              <PixelCar sprite={racer.sprite} size={28} rotate={false} />
+            </div>
 
             {/* Info */}
             <div className="flex-1 min-w-0">
-              <div className="text-[8px] truncate">{racer.name}</div>
+              <div className="text-[8px] truncate">{racer.name.split(" ")[0]}</div>
               <div className="text-[7px] text-gray-400">{racer.hours}%</div>
             </div>
 
-            {/* Trophy for first */}
-            {i === 0 && <span className="text-sm">&#x1F3C6;</span>}
+            {/* Trophies */}
+            {i === 0 && <span className="text-sm">🥇</span>}
+            {i === 1 && <span className="text-sm">🥈</span>}
+            {i === 2 && <span className="text-sm">🥉</span>}
           </div>
         ))}
       </div>

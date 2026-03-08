@@ -113,7 +113,9 @@ app.post("/api/upload", requireAuth, upload.single("file"), (req, res) => {
     for (let i = 2; i < rows.length; i++) {
       const name = rows[i][0];
       const value = rows[i][postingCol];
-      if (name && typeof name === "string" && name.trim()) {
+      const dateCol = rows[i][1];
+      const SKIP_NAMES = ["total", "snezhana ageeva"];
+      if (name && typeof name === "string" && name.trim() && (dateCol == null || dateCol === "") && !SKIP_NAMES.includes(name.trim().toLowerCase())) {
         parsed.push({ name: name.trim(), progress: Number(value) || 0 });
       }
     }
