@@ -102,7 +102,7 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
                   <span className="text-[7px] text-white whitespace-nowrap drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] -mb-1">
                     {racer.name.split(" ")[0]}
                   </span>
-                  <PixelCar sprite={racer.sprite} size={36} gray={racer.name.startsWith("Ilsur")} />
+                  <PixelCar sprite={racer.sprite} size={36} />
                 </div>
               </div>
 

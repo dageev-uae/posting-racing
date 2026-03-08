@@ -142,6 +142,13 @@ app.post("/api/upload", requireAuth, upload.single("file"), (req, res) => {
       }
     }
 
+    // Swap sprites between Ilsur and Farruh
+    const ilsur = updated.find((r) => r.name.toLowerCase().startsWith("ilsur"));
+    const farruh = updated.find((r) => r.name.toLowerCase().startsWith("farruh"));
+    if (ilsur && farruh) {
+      [ilsur.sprite, farruh.sprite] = [farruh.sprite, ilsur.sprite];
+    }
+
     racers = updated;
     saveData();
     res.json({ racers, parsed: parsed.length });
