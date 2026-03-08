@@ -150,6 +150,12 @@ app.post("/api/upload", requireAuth, upload.single("file"), (req, res) => {
       [ilsur.sprite, farruh.sprite] = [farruh.sprite, ilsur.sprite];
     }
 
+    // Rename Eugeny -> Eugeny A.
+    const eugeny = updated.find((r) => r.name.toLowerCase() === "eugeny");
+    if (eugeny) {
+      eugeny.name = "Eugeny A.";
+    }
+
     // Snezhana always gets the red car
     const snezhana = updated.find((r) => r.name.toLowerCase().startsWith("snezhana"));
     if (snezhana) {
