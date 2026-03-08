@@ -43,7 +43,7 @@ export function Leaderboard({ racers }: LeaderboardProps) {
             {/* Info */}
             <div className="flex-1 min-w-0">
               <div className="text-[8px] truncate">{racer.name}</div>
-              <div className="text-[7px] text-gray-400">{racer.hours}h</div>
+              <div className="text-[7px] text-gray-400">{racer.hours}%</div>
             </div>
 
             {/* Trophy for first */}

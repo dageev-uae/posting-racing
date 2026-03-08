@@ -9,11 +9,10 @@ interface RaceTrackProps {
 const ASPHALT = "#6b6b6b";
 
 export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
-  const CHECKPOINT_INTERVAL = 8;
-  const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+  const CHECKPOINT_INTERVAL = 25;
   const checkpoints = Array.from(
     { length: Math.floor(maxHours / CHECKPOINT_INTERVAL) },
-    (_, i) => ({ hours: (i + 1) * CHECKPOINT_INTERVAL, label: DAY_LABELS[i] ?? `${(i + 1) * CHECKPOINT_INTERVAL}h` })
+    (_, i) => ({ hours: (i + 1) * CHECKPOINT_INTERVAL, label: `${(i + 1) * CHECKPOINT_INTERVAL}%` })
   );
 
   return (
@@ -42,7 +41,7 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
             </span>
           ))}
           <span className="absolute right-0 text-[7px] text-yellow-400 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
-            {maxHours}h
+            100%
           </span>
         </div>
       </div>
