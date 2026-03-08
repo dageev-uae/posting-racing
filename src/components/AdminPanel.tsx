@@ -232,6 +232,16 @@ export function AdminPanel({ racers, onUpdate, onRefresh }: AdminPanelProps) {
             No racers yet. Upload an Excel file or add manually!
           </p>
         )}
+
+        {/* Clean up */}
+        {racers.length > 0 && (
+          <button
+            onClick={() => onUpdate([], password)}
+            className="mt-4 w-full bg-red-700 hover:bg-red-600 px-3 py-1.5 rounded text-[8px] cursor-pointer"
+          >
+            CLEAN UP — REMOVE ALL RACERS
+          </button>
+        )}
       </div>
     </div>
   );
