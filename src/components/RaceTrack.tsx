@@ -96,7 +96,7 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
 
                 {/* Car with name above */}
                 <div
-                  className="absolute bottom-2 transition-all duration-1000 ease-out z-10 flex flex-col items-center"
+                  className="absolute top-1/2 -translate-y-1/2 transition-all duration-1000 ease-out z-10 flex flex-col items-center"
                   style={{ left: carLeft }}
                 >
                   <span className="text-[7px] text-white whitespace-nowrap drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] -mb-1">
