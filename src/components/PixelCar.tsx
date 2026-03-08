@@ -6,12 +6,6 @@ interface PixelCarProps {
 }
 
 export function PixelCar({ sprite, size = 48, rotate = true, damaged = false }: PixelCarProps) {
-  // When rotated 90deg, the sprite top becomes the car's right (front).
-  // Clip the top of the original image to damage the front bumper.
-  const damageClip = damaged
-    ? "polygon(0% 8%, 4% 3%, 10% 6%, 18% 0%, 100% 0%, 100% 100%, 0% 100%)"
-    : undefined;
-
   return (
     <img
       src={sprite}
@@ -21,7 +15,9 @@ export function PixelCar({ sprite, size = 48, rotate = true, damaged = false }: 
         width: size,
         height: "auto",
         imageRendering: "auto",
-        clipPath: damageClip,
+        ...(damaged ? {
+          clipPath: "polygon(0% 15%, 8% 5%, 20% 12%, 30% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        } : {}),
       }}
       draggable={false}
     />
