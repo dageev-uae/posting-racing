@@ -15,7 +15,7 @@ export function PixelCar({ sprite, size = 48, rotate = true, gray = false }: Pix
         width: size,
         height: "auto",
         imageRendering: "auto",
-        filter: gray ? "grayscale(1) brightness(0.7)" : undefined,
+        filter: gray ? "grayscale(1) brightness(1.3) contrast(0.8)" : undefined,
       }}
       draggable={false}
     />
