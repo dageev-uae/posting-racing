@@ -115,7 +115,8 @@ app.post("/api/upload", requireAuth, upload.single("file"), (req, res) => {
       const value = rows[i][postingCol];
       const dateCol = rows[i][1];
       const SKIP_NAMES = ["total"];
-      if (name && typeof name === "string" && name.trim() && (dateCol == null || dateCol === "") && !SKIP_NAMES.includes(name.trim().toLowerCase())) {
+      const workDays = rows[i][5]; // 6th column (0-indexed: 5) = Work days
+      if (name && typeof name === "string" && name.trim() && (dateCol == null || dateCol === "") && !SKIP_NAMES.includes(name.trim().toLowerCase()) && workDays != null && workDays !== "") {
         parsed.push({ name: name.trim(), progress: Number(value) || 0 });
       }
     }
