@@ -1,9 +1,9 @@
 """
-File watcher that finds the latest posting efficiency file and uploads it.
+File watcher that continuously monitors for posting efficiency files and uploads them.
 
 Looks for files matching: Posting Efficiency_YYYY-MM-DD*.xlsx
 Tries today first, then goes back day by day up to 30 days.
-If nothing found, polls for today's file until it appears.
+Re-uploads when a new or modified file is detected.
 """
 
 import glob
@@ -84,6 +84,14 @@ def upload_file(filepath, upload_url, password):
     return False
 
 
+def get_file_mtime(filepath):
+    """Get file modification time, or 0 if file doesn't exist."""
+    try:
+        return os.path.getmtime(filepath)
+    except OSError:
+        return 0
+
+
 def main():
     server_url = os.environ.get("SERVER_URL")
     password = os.environ.get("PASSWORD")
@@ -97,7 +105,7 @@ def main():
         sys.exit(1)
 
     try:
-        poll_interval = int(os.environ.get("POLL_INTERVAL", "10"))
+        poll_interval = int(os.environ.get("POLL_INTERVAL", "60"))
         if poll_interval <= 0:
             raise ValueError("must be positive")
     except ValueError as exc:
@@ -106,33 +114,29 @@ def main():
 
     upload_url = f"{server_url.rstrip('/')}/api/upload"
     log.info("Upload target: %s", upload_url)
-
-    # Try to find an existing file (today or recent)
-    filepath = find_latest_file(watch_dir)
-
-    if filepath:
-        filename = os.path.basename(filepath)
-        log.info("Found file: %s", filename)
-        if upload_file(filepath, upload_url, password):
-            return
-        sys.exit(1)
-
-    # No file found — poll for today's file
-    today = date.today().strftime("%Y-%m-%d")
-    pattern = os.path.join(watch_dir, f"Posting Efficiency_{today}*.xlsx")
-    log.info("No recent file found. Polling for: %s", pattern)
+    log.info("Watch dir: %s", watch_dir)
     log.info("Poll interval: %d seconds", poll_interval)
 
-    while True:
-        matches = glob.glob(pattern)
-        if matches:
-            filepath = matches[0]
-            log.info("Found file: %s", os.path.basename(filepath))
-            if upload_file(filepath, upload_url, password):
-                return
-            sys.exit(1)
+    last_uploaded_file = None
+    last_uploaded_mtime = 0
 
-        log.info("Waiting for file...")
+    while True:
+        filepath = find_latest_file(watch_dir)
+
+        if filepath:
+            mtime = get_file_mtime(filepath)
+            if filepath != last_uploaded_file or mtime != last_uploaded_mtime:
+                log.info("Found file: %s", os.path.basename(filepath))
+                if upload_file(filepath, upload_url, password):
+                    last_uploaded_file = filepath
+                    last_uploaded_mtime = mtime
+                else:
+                    log.warning("Upload failed, will retry next cycle")
+            else:
+                log.debug("File unchanged, skipping")
+        else:
+            log.info("No file found, waiting...")
+
         time.sleep(poll_interval)
 
 

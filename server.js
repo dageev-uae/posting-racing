@@ -81,43 +81,35 @@ app.post("/api/upload", requireAuth, upload.single("file"), (req, res) => {
     const header1 = rows[0] || [];
     const header2 = rows[1] || [];
 
-    // Find a "Posting completeness, %" column that actually has data
-    // Prefer "Total" section, but fall back to any section with data
-    let postingCol = -1;
-    const candidates = [];
+    // Find "Current Posting completeness, %" and "Posting completeness, %" columns in Total section
+    let currentCol = -1;
+    let totalCol = -1;
 
     for (let c = 0; c < header2.length; c++) {
-      const h = String(header2[c] || "");
-      if (h.includes("Posting completeness") && !h.includes("Current")) {
-        const hasData = rows.slice(2).some((r) => r[0] && r[c] != null);
-        if (hasData) {
-          // Check if this is under "Total"
-          const section = header1[c] || header1.slice(0, c + 1).reverse().find(Boolean);
-          candidates.push({ col: c, section, isTotal: section === "Total" });
-        }
-      }
+      const h = String(header2[c] || "").trim();
+      const section = header1[c] || header1.slice(0, c + 1).reverse().find(Boolean);
+      if (section !== "Total") continue;
+      const hasData = rows.slice(2).some((r) => r[0] && r[c] != null);
+      if (!hasData) continue;
+      if (h === "Current Posting completeness, %" && currentCol < 0) currentCol = c;
+      if (h === "Posting completeness, %" && totalCol < 0) totalCol = c;
     }
 
-    if (candidates.length > 0) {
-      // Prefer Total section, otherwise take first with data
-      const pick = candidates.find((c) => c.isTotal) ?? candidates[0];
-      postingCol = pick.col;
-    }
-
-    if (postingCol < 0) {
-      return res.status(400).json({ error: "Could not find 'Posting completeness, %' column" });
+    if (currentCol < 0 && totalCol < 0) {
+      return res.status(400).json({ error: "Could not find posting completeness columns" });
     }
 
     // Parse officers
     const parsed = [];
     for (let i = 2; i < rows.length; i++) {
       const name = rows[i][0];
-      const value = rows[i][postingCol];
       const dateCol = rows[i][1];
       const SKIP_NAMES = ["total"];
       const workDays = rows[i][5]; // 6th column (0-indexed: 5) = Work days
       if (name && typeof name === "string" && name.trim() && (dateCol == null || dateCol === "") && !SKIP_NAMES.includes(name.trim().toLowerCase()) && workDays != null && workDays !== "") {
-        parsed.push({ name: name.trim(), progress: Number(value) || 0 });
+        const current = currentCol >= 0 ? Number(rows[i][currentCol]) || 0 : 0;
+        const total = totalCol >= 0 ? Number(rows[i][totalCol]) || 0 : 0;
+        parsed.push({ name: name.trim(), progress: current, progressTotal: total });
       }
     }
 
@@ -132,13 +124,14 @@ app.post("/api/upload", requireAuth, upload.single("file"), (req, res) => {
     for (const p of parsed) {
       const existing = existingByName.get(p.name.toLowerCase());
       if (existing) {
-        updated.push({ ...existing, hours: p.progress });
+        updated.push({ ...existing, hours: p.progress, hoursTotal: p.progressTotal });
       } else {
         updated.push({
           id: crypto.randomUUID(),
           name: p.name,
           sprite: getNextSprite([...racers, ...updated]),
           hours: p.progress,
+          hoursTotal: p.progressTotal,
         });
       }
     }

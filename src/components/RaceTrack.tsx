@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import type { Racer } from "../types";
 import { PixelCar } from "./PixelCar";
 
@@ -9,6 +10,19 @@ interface RaceTrackProps {
 const ASPHALT = "#6b6b6b";
 
 export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
+  const [animated, setAnimated] = useState(false);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    if (racers.length > 0 && !hasAnimated.current) {
+      // Small delay so browser renders cars at start position first
+      const timer = setTimeout(() => {
+        setAnimated(true);
+        hasAnimated.current = true;
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [racers]);
   const CHECKPOINT_INTERVAL = 25;
   const checkpoints = Array.from(
     { length: Math.floor(maxHours / CHECKPOINT_INTERVAL) },
@@ -38,13 +52,13 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
             <span
               key={cp.hours}
               className="absolute text-[7px] text-white/70 -translate-x-1/2 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]"
-              style={{ left: `calc(${88 + 4}px + (100% - ${88 + 16 + 4}px) * ${cp.hours / maxHours})` }}
+              style={{ left: `calc(${88 + 4}px + (100% - ${88 + 64 + 4}px) * ${cp.hours / maxHours})` }}
             >
               {cp.label}
             </span>
           ))}
-          <span className="absolute right-0 text-[7px] text-yellow-400 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
-            100%
+          <span className="absolute right-12 text-[7px] text-yellow-400 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
+            FINISH
           </span>
         </div>
       </div>
@@ -57,7 +71,7 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
         )}
         {/* Finish line */}
         {racers.length > 0 && (
-          <div className="absolute right-0 top-0 bottom-0 w-4 bg-[repeating-conic-gradient(#fff_0%_25%,#000_0%_50%)] bg-[length:16px_16px] z-30 pointer-events-none" />
+          <div className="absolute right-12 top-0 bottom-0 w-4 bg-[repeating-conic-gradient(#fff_0%_25%,#000_0%_50%)] bg-[length:16px_16px] z-30 pointer-events-none" />
         )}
 
         <div
@@ -77,8 +91,9 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
           const progress = Math.min((racer.hours / maxHours) * 100, 100);
           // 0% = before start line, >0% = after start line scaled to remaining track
           const START_PX = 88;
-          const FINISH_PX = 16;
-          const carLeft = progress === 0
+          const FINISH_PX = 64; // finish line at right-12 (48px) + w-4 (16px)
+          // carLeft: position of the car's left edge (tail)
+          const carLeft = !animated || progress === 0
             ? '28px'
             : `calc(${START_PX + 4}px + (100% - ${START_PX + FINISH_PX + 4}px) * ${progress / 100})`;
 
@@ -96,7 +111,7 @@ export function RaceTrack({ racers, maxHours }: RaceTrackProps) {
 
                 {/* Car centered in lane, name above */}
                 <div
-                  className="absolute top-1/2 transition-all duration-1000 ease-out z-10 flex flex-col items-center"
+                  className="absolute top-1/2 transition-all duration-[4s] ease-out z-40 flex flex-col items-center"
                   style={{ left: carLeft, transform: "translateY(calc(-50% + 4px))" }}
                 >
                   <span className="text-[7px] text-white whitespace-nowrap drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] -mb-2.5">
