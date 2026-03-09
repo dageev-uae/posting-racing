@@ -12,10 +12,13 @@ const DATA_FILE = path.join(__dirname, "data.json");
 
 const CAR_SPRITES = [
   "/cars/mark1_1.png", "/cars/mark3_4.png", "/cars/mark1_3.png",
-  "/cars/mark3_3.png", "/cars/mark1_4.png", "/cars/mark3_1.png",
-  "/cars/mark1_5.png", "/cars/mark3_5.png", "/cars/mark1_2.png",
+  "/cars/mark3_3.png", "/cars/mark3_1.png",
+  "/cars/mark3_5.png", "/cars/mark1_2.png",
   "/cars/mark3_6.png", "/cars/mark1_6.png", "/cars/mark3_2.png",
 ];
+// Reserved sprites (not in general pool)
+// mark1_5.png — Ilsur (silver)
+// mark1_4.png — Snezhana (red)
 
 let racers = loadData();
 
@@ -136,11 +139,10 @@ app.post("/api/upload", requireAuth, upload.single("file"), (req, res) => {
       }
     }
 
-    // Swap sprites between Ilsur and Farruh
+    // Ilsur always gets the silver car
     const ilsur = updated.find((r) => r.name.toLowerCase().startsWith("ilsur"));
-    const farruh = updated.find((r) => r.name.toLowerCase().startsWith("farruh"));
-    if (ilsur && farruh) {
-      [ilsur.sprite, farruh.sprite] = [farruh.sprite, ilsur.sprite];
+    if (ilsur) {
+      ilsur.sprite = "/cars/mark1_5.png";
     }
 
     // Rename duplicates
