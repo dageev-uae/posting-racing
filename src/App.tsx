@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import type { Racer } from "./types";
 import { RaceTrack } from "./components/RaceTrack";
 import { Leaderboard } from "./components/Leaderboard";
-import { AdminPanel } from "./components/AdminPanel";
 import "./App.css";
 
 const API = "/api/racers";
@@ -25,15 +24,6 @@ function App() {
     const id = setInterval(fetchRacers, 5000);
     return () => clearInterval(id);
   }, [fetchRacers]);
-
-  const handleUpdate = async (updated: Racer[], password: string) => {
-    setRacers(updated);
-    await fetch(API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: password },
-      body: JSON.stringify(updated),
-    });
-  };
 
   const TRACK_LENGTH = 100;
 
@@ -76,8 +66,6 @@ function App() {
         <RaceTrack racers={displayRacers} maxHours={TRACK_LENGTH} key={tab} />
         <Leaderboard racers={displayRacers} />
       </div>
-
-      <AdminPanel racers={racers} onUpdate={handleUpdate} onRefresh={fetchRacers} />
     </div>
   );
 }
