@@ -3,5 +3,5 @@ export interface Racer {
   name: string;
   sprite: string;
   hours: number;
-  hoursTotal: number;
+  hoursTotal?: number;
 }
